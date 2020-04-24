@@ -7,3 +7,6 @@ class Film:
 
     def __str__(self):
         return str(self.title) + " (" + str(self.year) + ") " + str(self.rate) + " " + str(self.url)
+
+    def getTitleWithYear(self):
+        return str(self.title) + " (" + str(self.year) + ")"
