@@ -7,7 +7,7 @@
 A task of application is to draw a film from Filmweb website. A user can specify details, such as category and minimal rate.\
 Films marked as viewed by user are skipped during the drawing.
 
-![Main Window](https://github.com/AdamKlekowski/AGH_Scripting_Languages/tree/master/main_project/screenshots/main_window.png)
+![Main Window](/screenshots/main_window.png)
 
 ## Technologies
 Project is created with:
