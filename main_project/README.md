@@ -2,6 +2,7 @@
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Setup](#setup)
+* [Documentation](#documentation)
 
 ## General info
 A task of application is to draw a film from Filmweb website.\
@@ -19,4 +20,31 @@ Project is created with:
 To run this project:
 ```
 $ python3 main.py
+```
+
+## Documentation
+All classes and methods are documented. Check e.g.
+```
+print(Film.\__doc__)
+
+A class used to represent a film.
+
+    Attributes
+    ----------
+    title : str
+        the title of the film
+    year : str
+        the release date of the film
+    url : str
+        url address to information about film on Filmweb website
+    rate : int
+        the rate of the film on Filmweb website
+    poster_url : str
+        url address of the film poster
+
+    Methods
+    -------
+    getTitleWithYear()
+        returns str contains title and release date of the film
+        e.g. "Iron Man (2008)"
 ```
