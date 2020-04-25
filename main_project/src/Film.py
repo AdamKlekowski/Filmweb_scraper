@@ -5,17 +5,19 @@ class Film:
     Attributes
     ----------
     title : str
+        the title of the film
     year : str
-        the name of the animal
+        the release date of the film
     url : str
-        the sound that the animal makes
+        url address to information about film on Filmweb website
     rate : int
-        the number of legs the animal has (default 4)
+        the rate of the film on Filmweb website
 
     Methods
     -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    getTitleWithYear()
+        returns str contains title and release date of the film
+        e.g. "Iron Man (2008)"
     """
     def __init__(self, title, year, url, rate, poster_url):
         self.title = title

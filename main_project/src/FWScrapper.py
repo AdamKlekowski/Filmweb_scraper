@@ -6,23 +6,20 @@ from random import randrange
 
 class FWScrapper:
     """
-    A class used to represent a film.
+    A class responsible for download required date form Filmweb website
+    and choose a random film.
 
     Attributes
     ----------
     categories : dict
-        dd
-    year : str
-        the name of the animal
-    url : str
-        the sound that the animal makes
-    rate : int
-        the number of legs the animal has (default 4)
+        ...
 
     Methods
     -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    _downloadListOfFilms(chosen_category, num_page=1)
+        ...
+    getRandomFilm(chosen_category, minimal_rate, file)
+        ...
     """
     categories = {
         "Akcja": 28,
@@ -48,36 +45,58 @@ class FWScrapper:
     @staticmethod
     def _downloadListOfFilms(chosen_category, num_page=1):
         results = []
-        try:
-            url = "https://www.filmweb.pl/films/search?genres=" + str(
-                FWScrapper.categories[chosen_category]) + "&orderBy=popularity&descending=true&page=" + str(num_page)
-            page = requests.get(url)
-            soup = BeautifulSoup(page.content, 'html.parser')
-            results = results + soup.find_all(class_='hits__item')
 
-            for elem in results:
-                title = elem.find(class_='filmPreview__title').text
-                year = elem.find(class_='filmPreview__year').text
-                rate = elem.find(class_='rateBox__rate').text
-                link = "www.filmweb.pl" + elem.find(class_='filmPreview__link')["href"]
-                img_src = elem.find('img')["data-src"]
+        url = "https://www.filmweb.pl/films/search?genres=" + str(
+            FWScrapper.categories[chosen_category]) + "&orderBy=popularity&descending=true&page=" + str(num_page)
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        hits_item_lists = soup.find_all(class_='hits__item')
 
-                FWScrapper.listOfFilms.append(Film(title, year, link, rate, img_src))
-            FWScrapper.currentCategory = chosen_category
-        except:
-            print("Error")
-            FWScrapper.listOfFilms = []
-            FWScrapper.currentCategory = ""
+        for elem in hits_item_lists:
+            title = elem.find(class_='filmPreview__title').text
+            year = elem.find(class_='filmPreview__year').text
+            rate = elem.find(class_='rateBox__rate').text
+            link = "https://www.filmweb.pl" + elem.find(class_='filmPreview__link')["href"]
+            img_src = elem.find('img')["data-src"]
+
+            results.append(Film(title, year, link, rate, img_src))
+        return results
 
     @staticmethod
     def getRandomFilm(chosen_category, minimal_rate, file):
         if FWScrapper.currentCategory != chosen_category or not FWScrapper.listOfFilms:
             FWScrapper.listOfFilms = []
-            FWScrapper._downloadListOfFilms(chosen_category)
+            try:
+                FWScrapper.listOfFilms = FWScrapper._downloadListOfFilms(chosen_category)
+                FWScrapper.currentCategory = chosen_category
+            except:
+                return None
 
         finalListOfFilm = [film for film in FWScrapper.listOfFilms if film.rate >= minimal_rate and film.getTitleWithYear() not in file.getFilmsToSkip()]
+        i = 2
+        while len(finalListOfFilm) == 0 and i < 5:
+            try:
+                FWScrapper.listOfFilms = FWScrapper.listOfFilms + FWScrapper._downloadListOfFilms(chosen_category, i)
+            except:
+                return None
+            i = i + 1
+            finalListOfFilm = [film for film in FWScrapper.listOfFilms if film.rate >= minimal_rate and film.getTitleWithYear() not in file.getFilmsToSkip()]
+
         if not finalListOfFilm:
             return None
         else:
             random_choice = randrange(0, len(finalListOfFilm))
             return finalListOfFilm[random_choice]
+
+    @staticmethod
+    def downloadDescription(film):
+        if type(film) == Film:
+            try:
+                page = requests.get(film.url)
+            except:
+                return None
+            soup = BeautifulSoup(page.content, 'html.parser')
+            description = soup.find(class_='filmPosterSection__plot').text
+            return description
+        else:
+            return None
