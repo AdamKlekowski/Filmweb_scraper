@@ -25,7 +25,7 @@ $ python3 main.py
 ## Documentation
 All classes and methods are documented. Check e.g. :
 ```
-print(Film.__doc__)
+>>> print(Film.__doc__)
 
 A class used to represent a film.
 
