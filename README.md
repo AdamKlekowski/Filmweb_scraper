@@ -22,9 +22,14 @@ graphical user interface library
 library for pulling data out of HTML and XML files
 
 ## Setup
+To install all dependecies:
+```
+$ pip3 install -r requirements.txt
+```
+
 To run this project:
 ```
-$ python3 main.py
+$ python3 src/main.py
 ```
 
 ## Documentation
