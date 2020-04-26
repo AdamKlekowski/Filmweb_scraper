@@ -7,7 +7,7 @@ class File:
     ----------
     file_name : str
         a name of file to read/write list of films to skip
-        default value = "films_to_skip.txt"
+        default value is "films_to_skip.txt"
     filmsToSkip : list
         a list of films, that are viewed by user
         and should be skipped
@@ -23,15 +23,19 @@ class File:
     """
     def __init__(self, file_name="films_to_skip.txt"):
         self._file_name = file_name
-        f = open(self._file_name, "r")
-        self.filmsToSkip = f.read().splitlines()
-        f.close()
+        try:
+            f = open(self._file_name, "r")
+            self.filmsToSkip = f.read().splitlines()
+            f.close()
+        except FileNotFoundError:
+            self.filmsToSkip = []
 
     def getFilmsToSkip(self):
         return self.filmsToSkip
 
-    def addFilmsToSkip(self, newFilm):
-        self.filmsToSkip.append(newFilm)
+    def addFilmsToSkip(self, new_film):
+        if type(new_film) == str:
+            self.filmsToSkip.append(new_film)
 
     def save(self):
         f = open(self._file_name, "w")

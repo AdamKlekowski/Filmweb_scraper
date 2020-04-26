@@ -8,6 +8,7 @@ Films marked as viewed by user are skipped during the drawing.
 
 from File import *
 from GUI import GUI
+from Film import Film
 
 if __name__ == "__main__":
     f = File()

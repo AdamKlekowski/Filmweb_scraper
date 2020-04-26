@@ -12,6 +12,8 @@ class Film:
         url address to information about film on Filmweb website
     rate : int
         the rate of the film on Filmweb website
+    poster_url : str
+        url address of the film poster
 
     Methods
     -------

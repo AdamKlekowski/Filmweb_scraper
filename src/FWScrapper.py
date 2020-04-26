@@ -1,26 +1,35 @@
-import requests
+from requests import get
 from bs4 import BeautifulSoup
 from Film import Film
 from random import randrange
+from urllib3 import exceptions as urllib3
+from requests import exceptions as requests
 
 
 class FWScrapper:
     """
-    A class responsible for download required date form Filmweb website
+    A class responsible for download required date from Filmweb website
     and choose a random film.
 
     Attributes
     ----------
     categories : dict
-        ...
+        dictionary makes string into number,
+        needed to construct correct url address
+    listOfFilms : list
+        a list of film that are downloaded last time
+    currentCategory : str
+        a name of category that was searched last time
 
     Methods
     -------
-    _downloadListOfFilms(chosen_category, num_page=1)
-        ...
     getRandomFilm(chosen_category, minimal_rate, file)
-        ...
+        returns random film from chosen category
+    downloadDescription(film)
+        returns short description from Filmweb website
+        for the film given as parameter
     """
+
     categories = {
         "Akcja": 28,
         "Animacja": 2,
@@ -48,7 +57,7 @@ class FWScrapper:
 
         url = "https://www.filmweb.pl/films/search?genres=" + str(
             FWScrapper.categories[chosen_category]) + "&orderBy=popularity&descending=true&page=" + str(num_page)
-        page = requests.get(url)
+        page = get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
         hits_item_lists = soup.find_all(class_='hits__item')
 
@@ -69,31 +78,32 @@ class FWScrapper:
             try:
                 FWScrapper.listOfFilms = FWScrapper._downloadListOfFilms(chosen_category)
                 FWScrapper.currentCategory = chosen_category
-            except:
+            except (urllib3.NewConnectionError, urllib3.MaxRetryError, requests.ConnectionError):
                 return None
 
-        finalListOfFilm = [film for film in FWScrapper.listOfFilms if film.rate >= minimal_rate and film.getTitleWithYear() not in file.getFilmsToSkip()]
+        final_list = [f for f in FWScrapper.listOfFilms if f.rate >= minimal_rate and f.getTitleWithYear() not in file.getFilmsToSkip()]
         i = 2
-        while len(finalListOfFilm) == 0 and i < 5:
+        # 'and i<5' can be add in condition below to decrease number of searched pages
+        while len(final_list) < 3:
             try:
                 FWScrapper.listOfFilms = FWScrapper.listOfFilms + FWScrapper._downloadListOfFilms(chosen_category, i)
-            except:
+            except (urllib3.NewConnectionError, urllib3.MaxRetryError, requests.ConnectionError):
                 return None
             i = i + 1
-            finalListOfFilm = [film for film in FWScrapper.listOfFilms if film.rate >= minimal_rate and film.getTitleWithYear() not in file.getFilmsToSkip()]
+            final_list = [f for f in FWScrapper.listOfFilms if f.rate >= minimal_rate and f.getTitleWithYear() not in file.getFilmsToSkip()]
 
-        if not finalListOfFilm:
+        if not final_list:
             return None
         else:
-            random_choice = randrange(0, len(finalListOfFilm))
-            return finalListOfFilm[random_choice]
+            random_choice = randrange(0, len(final_list))
+            return final_list[random_choice]
 
     @staticmethod
     def downloadDescription(film):
         if type(film) == Film:
             try:
-                page = requests.get(film.url)
-            except:
+                page = get(film.url)
+            except (urllib3.NewConnectionError, urllib3.MaxRetryError, requests.ConnectionError):
                 return None
             soup = BeautifulSoup(page.content, 'html.parser')
             description = soup.find(class_='filmPosterSection__plot').text
