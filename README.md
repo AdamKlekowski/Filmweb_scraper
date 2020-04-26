@@ -3,6 +3,7 @@
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [Documentation](#documentation)
+* [License](#license)
 
 ## General info
 Project developed for Scripting Languages class (AGH UST).
@@ -19,10 +20,12 @@ Project is created with:
 * Tkinter 8.6\
 graphical user interface library
 * BeautifulSoup 4.9\
-library for pulling data out of HTML and XML files
+library for pulling data out of HTML files
+
+Other needed libraries in [requirements.txt](./requirements.txt).
 
 ## Setup
-To install all dependecies:
+To install all dependencies:
 ```
 $ pip3 install -r requirements.txt
 ```
@@ -58,3 +61,6 @@ All classes and methods are documented. Check e.g.
         returns str contains title and release date of the film
         e.g. "Iron Man (2008)"
 ```
+
+## License
+*[MIT LICENSE](./LICENSE)*
