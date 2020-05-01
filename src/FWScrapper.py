@@ -25,6 +25,7 @@ class FWScrapper:
     -------
     getRandomFilm(chosen_category, minimal_rate, file)
         returns random film from chosen category
+        if category is incorrect returns None
     downloadDescription(film)
         returns short description from Filmweb website
         for the film given as parameter
@@ -73,6 +74,11 @@ class FWScrapper:
 
     @staticmethod
     def getRandomFilm(chosen_category, minimal_rate, file):
+        if minimal_rate > '8':
+            minimal_rate = '8'
+        if chosen_category not in FWScrapper.categories:
+            return None
+
         if FWScrapper.currentCategory != chosen_category or not FWScrapper.listOfFilms:
             FWScrapper.listOfFilms = []
             try:
@@ -83,8 +89,7 @@ class FWScrapper:
 
         final_list = [f for f in FWScrapper.listOfFilms if f.rate >= minimal_rate and f.getTitleWithYear() not in file.getFilmsToSkip()]
         i = 2
-        # 'and i<5' can be add in condition below to decrease number of searched pages
-        while len(final_list) < 3:
+        while len(final_list) < 5 and i < 10:
             try:
                 FWScrapper.listOfFilms = FWScrapper.listOfFilms + FWScrapper._downloadListOfFilms(chosen_category, i)
             except (urllib3.NewConnectionError, urllib3.MaxRetryError, requests.ConnectionError):

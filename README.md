@@ -36,7 +36,7 @@ $ python3 src/main.py
 ```
 
 ## Documentation
-All classes and methods are documented. Check e.g.
+All classes are documented. Check e.g.
 ```
 >>> print(Film.__doc__)
 
