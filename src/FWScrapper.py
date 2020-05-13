@@ -67,7 +67,7 @@ class FWScrapper:
             year = elem.find(class_='filmPreview__year').text
             rate = elem.find(class_='rateBox__rate').text
             link = "https://www.filmweb.pl" + elem.find(class_='filmPreview__link')["href"]
-            img_src = elem.find('img')["data-src"]
+            img_src = elem.find(class_='poster poster--auto')['data-image']
 
             results.append(Film(title, year, link, rate, img_src))
         return results
